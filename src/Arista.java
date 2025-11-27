@@ -1,22 +1,36 @@
 
-import java.awt.Color;
-import java.awt.Graphics;
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/**
- *
- * @author jb
- */
 public class Arista {
-    public void linea (Graphics g, String Nombre, int x1, int y1, int x2, int y2){
-        g.setColor(Color.RED);
-        g.drawLine(x1, y1, x2, y2);
-        g.setColor(Color.BLACK);
-        g.drawString(Nombre, ((x1-x2)/2)+x2, ((y1-y2)/2)+y2);
+    private Nodo nodo1;
+    private Nodo nodo2;
+    private String nombre;
+
+    public Arista(Nodo nodo1, Nodo nodo2, String nombre) {
+        this.nodo1 = nodo1;
+        this.nodo2 = nodo2;
+        this.nombre = nombre;
+    }
+
+    public Nodo getNodo1() {
+        return nodo1;
+    }
+
+    public void setNodo1(Nodo nodo1) {
+        this.nodo1 = nodo1;
+    }
+
+    public Nodo getNodo2() {
+        return nodo2;
+    }
+
+    public void setNodo2(Nodo nodo2) {
+        this.nodo2 = nodo2;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }

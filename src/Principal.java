@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,51 +11,36 @@
  */
 public class Principal extends javax.swing.JFrame {
 
-    private char[] nombre = {'A','B','C','D','E','F','G','H','I','J','K',
-                             'L','M','N','O','P','Q','R','S','T','U','V',
-                             'W','X','Y','Z'};
-    public static boolean[][] MAdyacencia = new boolean [27][27];
-    private boolean bNodo = false, bArista=false;
-    public static int c=0, i=-1, j=-1;
-    public byte indice = 0;
-    public static boolean edoArista = false;
-    public static int x1, y1, x2, y2;
-    public static int indArista = 0;
+    private PanelGrafo panelGrafo;
     
     public Principal() {
         initComponents();
         setTitle ("..:: Programa de Grafos - ITSAL ::..");
-        inicializa();
+        // Replace the default JPanel with our PanelGrafo
+        // Note: In a real NetBeans project, we would use "Customize Code" on the component.
+        // Here we are manually patching it.
     }
     
-    private void inicializa(){
-        for (int k =0; k<27; k++)
-            for (int l=0; l<27; l++)
-                MAdyacencia [k][l] = false;
-    }
-
     private void muestraAdyacencia (){
-        int bit = 0;
-        String cad="  ";
-        String nom = "";
-        for (int k = 0; k<c; k++){
-            if (k>0)
-                cad="";
-            System.out.print("    "+cad+ nombre[k]);
+        boolean[][] matriz = panelGrafo.getMatrizAdyacencia();
+        java.util.List<Nodo> nodos = panelGrafo.getNodos();
+        int c = nodos.size();
+        
+        System.out.print("    ");
+        for (Nodo n : nodos) {
+            System.out.print("    " + n.getNombre());
         }
+        System.out.println();
+        
         for (int k=0; k<c; k++){
-            System.out.println("");
+            System.out.print(nodos.get(k).getNombre() + "     ");
             for (int l=0; l<c; l++){
-                bit =0;
-                if (MAdyacencia[k][l])
-                    bit=1;
-                nom="";
-                if (l==0)
-                    nom = nombre[k] + "     ";
-                System.out.print(nom + bit + "    ");
+                System.out.print((matriz[k][l] ? "1" : "0") + "    ");
             }
+            System.out.println();
         }
     }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -65,7 +51,10 @@ public class Principal extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        lienzo = new javax.swing.JPanel();
+        // Manually changed to PanelGrafo
+        panelGrafo = new PanelGrafo();
+        lienzo = panelGrafo; 
+        
         jPanel2 = new javax.swing.JPanel();
         btnNodo = new javax.swing.JButton();
         btnArista = new javax.swing.JButton();
@@ -85,13 +74,8 @@ public class Principal extends javax.swing.JFrame {
         jLabel1.setText("Estructura y Organización de Datos");
         jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        lienzo.setBackground(new java.awt.Color(255, 255, 255));
         lienzo.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        lienzo.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lienzoMouseClicked(evt);
-            }
-        });
+        // Removed mouse listener from here, handled in PanelGrafo
 
         javax.swing.GroupLayout lienzoLayout = new javax.swing.GroupLayout(lienzo);
         lienzo.setLayout(lienzoLayout);
@@ -221,23 +205,21 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnNodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNodoActionPerformed
-        bArista = false;
-        if (bNodo) {
-            bNodo = false;
+        if (panelGrafo.getModo() == PanelGrafo.MODO_NODO) {
+            panelGrafo.setModo(PanelGrafo.MODO_NADA);
             lblEstado.setText("     Estado : Dibujo de nodos desactivado");
         } else {
-            bNodo = true;
+            panelGrafo.setModo(PanelGrafo.MODO_NODO);
             lblEstado.setText("     Estado : Dibujo de nodos activado");
         }
     }//GEN-LAST:event_btnNodoActionPerformed
 
     private void btnAristaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAristaActionPerformed
-        bNodo=false;
-        if (bArista){
-            bArista = false;
+        if (panelGrafo.getModo() == PanelGrafo.MODO_ARISTA) {
+            panelGrafo.setModo(PanelGrafo.MODO_NADA);
             lblEstado.setText("     Estado : Dibujo de aristas desactivado");
-        }else {
-            bArista = true;
+        } else {
+            panelGrafo.setModo(PanelGrafo.MODO_ARISTA);
             lblEstado.setText("     Estado : Dibujo de aristas activado");
         }    
     }//GEN-LAST:event_btnAristaActionPerformed
@@ -245,15 +227,6 @@ public class Principal extends javax.swing.JFrame {
     private void btnMAdyacenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMAdyacenciaActionPerformed
         muestraAdyacencia();
     }//GEN-LAST:event_btnMAdyacenciaActionPerformed
-
-    private void lienzoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lienzoMouseClicked
-        if (bNodo){
-            Nodo n = new Nodo (nombre[indice], lienzo.getGraphics());
-            indice++;
-            lienzo.add(n);
-            n.dibuja(n.getGraphics());
-        }
-    }//GEN-LAST:event_lienzoMouseClicked
 
     /**
      * @param args the command line arguments
